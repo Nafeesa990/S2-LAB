@@ -1,0 +1,180 @@
+
+SQL*Plus: Release 10.2.0.1.0 - Production on Mon Mar 4 14:11:56 2024
+
+Copyright (c) 1982, 2005, Oracle.  All rights reserved.
+
+SQL> connect system
+Enter password:
+Connected.
+SQL> drop product table;
+drop product table
+     *
+ERROR at line 1:
+ORA-00950: invalid DROP option
+
+
+SQL> drop table product;
+
+Table dropped.
+
+SQL> create table product(pro_id int primary key,pro_name varchar(10),sup_id int,cat_id int,unit int, price int);
+
+Table created.
+
+SQL> desc table product;
+Usage: DESCRIBE [schema.]object[@db_link]
+SQL> desc product;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRO_ID                                    NOT NULL NUMBER(38)
+ PRO_NAME                                           VARCHAR2(10)
+ SUP_ID                                             NUMBER(38)
+ CAT_ID                                             NUMBER(38)
+ UNIT                                               NUMBER(38)
+ PRICE                                              NUMBER(38)
+
+SQL> insert into product values(&pro_id,'&pro_name',&sup_id,&cat_id,&unit,&price);
+Enter value for pro_id: 1
+Enter value for pro_name: khai
+Enter value for sup_id: 1
+Enter value for cat_id: 1
+Enter value for unit: 10
+Enter value for price: 18
+old   1: insert into product values(&pro_id,'&pro_name',&sup_id,&cat_id,&unit,&price)
+new   1: insert into product values(1,'khai',1,1,10,18)
+
+1 row created.
+
+SQL> /
+Enter value for pro_id: 2
+Enter value for pro_name: cheng
+Enter value for sup_id: 1
+Enter value for cat_id: 1
+Enter value for unit: 24
+Enter value for price: 19
+old   1: insert into product values(&pro_id,'&pro_name',&sup_id,&cat_id,&unit,&price)
+new   1: insert into product values(2,'cheng',1,1,24,19)
+
+1 row created.
+
+SQL> /
+Enter value for pro_id: 3
+Enter value for pro_name: anilla
+Enter value for sup_id: 1
+Enter value for cat_id: 2
+Enter value for unit: 12
+Enter value for price: 10
+old   1: insert into product values(&pro_id,'&pro_name',&sup_id,&cat_id,&unit,&price)
+new   1: insert into product values(3,'anilla',1,2,12,10)
+
+1 row created.
+
+SQL> /
+Enter value for pro_id: 4
+Enter value for pro_name: anton
+Enter value for sup_id: 2
+Enter value for cat_id: 2
+Enter value for unit: 42
+Enter value for price: 22
+old   1: insert into product values(&pro_id,'&pro_name',&sup_id,&cat_id,&unit,&price)
+new   1: insert into product values(4,'anton',2,2,42,22)
+
+1 row created.
+
+SQL> 5
+SP2-0226: Invalid line number
+SQL> /
+Enter value for pro_id: 5
+Enter value for pro_name: gancho
+Enter value for sup_id: 2
+Enter value for cat_id: 2
+Enter value for unit: 36
+Enter value for price: 21.35
+old   1: insert into product values(&pro_id,'&pro_name',&sup_id,&cat_id,&unit,&price)
+new   1: insert into product values(5,'gancho',2,2,36,21.35)
+
+1 row created.
+
+SQL> select * from product;
+
+    PRO_ID PRO_NAME       SUP_ID     CAT_ID       UNIT      PRICE
+---------- ---------- ---------- ---------- ---------- ----------
+         1 khai                1          1         10         18
+         2 cheng               1          1         24         19
+         3 anilla              1          2         12         10
+         4 anton               2          2         42         22
+         5 gancho              2          2         36         21
+
+SQL> update pro_name='vanilla' where pro_id=3;
+update pro_name='vanilla' where pro_id=3
+               *
+ERROR at line 1:
+ORA-00971: missing SET keyword
+
+
+SQL> update product set pro_name='vanilla' where pro_id=3;
+
+1 row updated.
+
+SQL> select * from product;
+
+    PRO_ID PRO_NAME       SUP_ID     CAT_ID       UNIT      PRICE
+---------- ---------- ---------- ---------- ---------- ----------
+         1 khai                1          1         10         18
+         2 cheng               1          1         24         19
+         3 vanilla             1          2         12         10
+         4 anton               2          2         42         22
+         5 gancho              2          2         36         21
+
+SQL> select max(price),min(price) from product where sup_id=2;
+
+MAX(PRICE) MIN(PRICE)
+---------- ----------
+        22         21
+
+SQL> select count(pro_name) from product where cat_id=1;
+
+COUNT(PRO_NAME)
+---------------
+              2
+
+SQL> select count(price) from product where price>20;
+
+COUNT(PRICE)
+------------
+           2
+
+SQL> select sum(price) from product where sup_id=1;
+
+SUM(PRICE)
+----------
+        47
+
+SQL> select avg(price) from product;
+
+AVG(PRICE)
+----------
+        18
+
+SQL> select avg(price) from product where cat=1;
+select avg(price) from product where cat=1
+                                     *
+ERROR at line 1:
+ORA-00904: "CAT": invalid identifier
+
+
+SQL> select avg(price) from product where cat_id=1;
+
+AVG(PRICE)
+----------
+      18.5
+
+SQL> select pro_name from product where price>(select avg(price) from product);
+
+PRO_NAME
+----------
+cheng
+anton
+gancho
+
+SQL>
